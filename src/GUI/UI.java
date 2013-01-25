@@ -4,17 +4,62 @@
  */
 package GUI;
 
+import Database.Database;
+import GUI.Dialogs.DetaliiDlg;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import Logic.*;
+
 /**
  *
  * @author Remus
  */
 public class UI extends javax.swing.JFrame {
+    
+    public String tableData[][]; //matricea folosita pentru stocarea datelor despre spectacole
 
+     public void actualizeazaSpectacolele()
+    {
+        //Citeste rutele din baza de date
+        try
+        {
+            ArrayList<String[]> data = Database.ToateSpectacolele();
+            tableData = new String[data.size()][8];
+            
+            for(int row = 0; row < data.size(); row++)
+            {
+                tableData[row][0]=data.get(row)[0];
+                tableData[row][1]=data.get(row)[1];
+                tableData[row][2]=data.get(row)[3];
+                tableData[row][3]=data.get(row)[4];
+                tableData[row][4]=data.get(row)[5];
+                tableData[row][5]=data.get(row)[6];
+                tableData[row][6]=data.get(row)[7];
+                tableData[row][7]=data.get(row)[8];    
+          
+            }
+            tableSpectacole.setModel(new javax.swing.table.DefaultTableModel(
+                tableData, new String []
+                {
+                    "ID", "Titlu", "Pret balcon", "Pret loja", "Pret parter", "Data", "Ora", "Durata"
+                })
+            );
+        }
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null, ex, "Eroare", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    
+    
     /**
      * Creates new form UI
      */
     public UI() {
         initComponents();
+        Database.Init();
+        actualizeazaSpectacolele();
     }
 
     /**
@@ -28,21 +73,22 @@ public class UI extends javax.swing.JFrame {
 
         jPanel12 = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
-        jTable6 = new javax.swing.JTable();
-        jButton6 = new javax.swing.JButton();
+        tableSpectacole = new javax.swing.JTable();
+        buttonDetalii = new javax.swing.JButton();
         jPanel13 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
-        jComboBox13 = new javax.swing.JComboBox();
-        jComboBox14 = new javax.swing.JComboBox();
+        cmbAnul = new javax.swing.JComboBox();
+        cmbLuna = new javax.swing.JComboBox();
         jLabel21 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel12.setBackground(new java.awt.Color(161, 161, 146));
         jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jTable6.setModel(new javax.swing.table.DefaultTableModel(
+        tableSpectacole.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -53,11 +99,16 @@ public class UI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane6.setViewportView(jTable6);
+        jScrollPane6.setViewportView(tableSpectacole);
 
-        jButton6.setFont(new java.awt.Font("Tahoma 11", 1, 12)); // NOI18N
-        jButton6.setText("Detalii");
-        jButton6.setActionCommand("detaliiButton");
+        buttonDetalii.setFont(new java.awt.Font("Tahoma 11", 1, 12)); // NOI18N
+        buttonDetalii.setText("Detalii");
+        buttonDetalii.setActionCommand("detaliiButton");
+        buttonDetalii.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDetaliiActionPerformed(evt);
+            }
+        });
 
         jPanel13.setBackground(new java.awt.Color(215, 228, 242));
 
@@ -67,10 +118,10 @@ public class UI extends javax.swing.JFrame {
         jLabel20.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel20.setText("Anul");
 
-        jComboBox13.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2010", "2011", "2012" }));
-        jComboBox13.setSelectedIndex(2);
+        cmbAnul.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "2010", "2011", "2012" }));
+        cmbAnul.setSelectedIndex(2);
 
-        jComboBox14.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai ", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie", "Toate" }));
+        cmbLuna.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai ", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie", "Toate" }));
 
         jLabel21.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel21.setText("Luna");
@@ -86,11 +137,11 @@ public class UI extends javax.swing.JFrame {
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox13, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmbAnul, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addComponent(jLabel21)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox14, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmbLuna, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel13Layout.setVerticalGroup(
@@ -101,13 +152,16 @@ public class UI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel20)
-                    .addComponent(jComboBox13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbAnul, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel21)
-                    .addComponent(jComboBox14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbLuna, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26))
         );
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        jLabel1.setText("Spectacole:");
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
@@ -116,32 +170,36 @@ public class UI extends javax.swing.JFrame {
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE)
                     .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(20, 20, 20))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buttonDetalii, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(282, 282, 282)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(57, Short.MAX_VALUE))
+                    .addComponent(jPanel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonDetalii, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 598, Short.MAX_VALUE)
+            .addGap(0, 765, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
@@ -150,16 +208,42 @@ public class UI extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 409, Short.MAX_VALUE)
+            .addGap(0, 461, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void buttonDetaliiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDetaliiActionPerformed
+        // TODO add your handling code here:
+        DetaliiBilet detBilet;
+        int row=tableSpectacole.getSelectedRow(); //returneaza randul selectat (spectacolul selectat)
+        double pret_balcon=0,pret_loja=0,pret_parter=0;
+        
+        String id = tableData[row][0]; // extragem date despre spectacol 
+        String titlu=tableData[row][1];     
+        try{
+        pret_balcon=Double.parseDouble(tableData[row][2]);
+        pret_loja=Double.parseDouble(tableData[row][3]);
+        pret_parter=Double.parseDouble(tableData[row][4]);
+        }
+        catch(NumberFormatException e){
+             JOptionPane.showMessageDialog(null, e,"Eroare",JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        detBilet=Database.GenereazaDetaliiBilet(id,titlu,pret_balcon,pret_loja,pret_parter);
+        
+        DetaliiDlg dd = new DetaliiDlg(null, true);
+        dd.setLocationRelativeTo(tableSpectacole);
+        dd.setTxtFields(detBilet.titlu_spectacol,detBilet.incasari_spectacol, detBilet.balcon_total, detBilet.loja_total, detBilet.parter_total, detBilet.balcon_vandut, detBilet.loja_vandut, detBilet.parter_vandut);
+        dd.setVisible(true);
+    }//GEN-LAST:event_buttonDetaliiActionPerformed
 
     /**
      * @param args the command line arguments
@@ -196,15 +280,16 @@ public class UI extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton6;
-    private javax.swing.JComboBox jComboBox13;
-    private javax.swing.JComboBox jComboBox14;
+    private javax.swing.JButton buttonDetalii;
+    private javax.swing.JComboBox cmbAnul;
+    private javax.swing.JComboBox cmbLuna;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTable jTable6;
+    private javax.swing.JTable tableSpectacole;
     // End of variables declaration//GEN-END:variables
 }

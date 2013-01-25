@@ -16,7 +16,7 @@ public class Functionality {
         return null;
     }
 
-    public static Bilete[] getBilete(Spectacol spectacol) {
+    public static DetaliiBilet[] getBilete(Spectacol spectacol) {
         return null;
     }
 
@@ -33,6 +33,6 @@ public class Functionality {
     }
     
     public static boolean introducereBilete(){
-        
+        return true;
     }
 }
