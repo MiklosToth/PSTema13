@@ -103,6 +103,49 @@ public class Database {
         
     }
     
+     public static ArrayList<String[]> TotiActorii()
+    {
+        //returneaza actorii din tabelul Personal al bazei de date
+        
+        ArrayList<String[]> data = new ArrayList<>();
+        SQLiteStatement queryResult = null;
+        double brut=0,impozit=0,net=0;
+        
+        try
+        {
+            queryResult = database.prepare("SELECT * FROM Personal where tip='a'");
+            while(queryResult.step())
+            {
+                String[] row = new String[5];
+                
+                row[0]=queryResult.columnString(0);
+                row[1]=queryResult.columnString(1);
+                row[2]=queryResult.columnString(3);
+                brut=Double.parseDouble(row[2]);
+                impozit=0.19*brut;
+                net=brut-impozit;
+                row[3]=String.valueOf(net);
+                row[4]=String.valueOf(impozit);
+                
+                data.add(row);
+            }
+        }
+        catch (SQLiteException ex)
+        {
+            JOptionPane.showMessageDialog(null, ex,"Eroare",JOptionPane.ERROR_MESSAGE);
+        }
+        catch (NumberFormatException e)
+        {
+             JOptionPane.showMessageDialog(null, e,"Eroare la conversie din string in double",JOptionPane.ERROR_MESSAGE);
+        }
+        if(data.isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "Nu exista actori", "Eroare",JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        return data;
+    }
+    
     
     
 }

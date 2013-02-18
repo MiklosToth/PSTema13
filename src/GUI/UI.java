@@ -16,30 +16,32 @@ import Logic.*;
  */
 public class UI extends javax.swing.JFrame {
     
-    public String tableData[][]; //matricea folosita pentru stocarea datelor despre spectacole
-
+    public String spectacoleData[][]; //matricea folosita pentru stocarea datelor despre spectacole
+    public String actoriData[][];
+    public double cheltuieliTotaleActori=0;
+    
      public void actualizeazaSpectacolele()
     {
         //Citeste rutele din baza de date
         try
         {
             ArrayList<String[]> data = Database.ToateSpectacolele();
-            tableData = new String[data.size()][8];
+            spectacoleData = new String[data.size()][8];
             
             for(int row = 0; row < data.size(); row++)
             {
-                tableData[row][0]=data.get(row)[0];
-                tableData[row][1]=data.get(row)[1];
-                tableData[row][2]=data.get(row)[3];
-                tableData[row][3]=data.get(row)[4];
-                tableData[row][4]=data.get(row)[5];
-                tableData[row][5]=data.get(row)[6];
-                tableData[row][6]=data.get(row)[7];
-                tableData[row][7]=data.get(row)[8];    
+                spectacoleData[row][0]=data.get(row)[0];
+                spectacoleData[row][1]=data.get(row)[1];
+                spectacoleData[row][2]=data.get(row)[3];
+                spectacoleData[row][3]=data.get(row)[4];
+                spectacoleData[row][4]=data.get(row)[5];
+                spectacoleData[row][5]=data.get(row)[6];
+                spectacoleData[row][6]=data.get(row)[7];
+                spectacoleData[row][7]=data.get(row)[8];    
           
             }
             tableSpectacole.setModel(new javax.swing.table.DefaultTableModel(
-                tableData, new String []
+                spectacoleData, new String []
                 {
                     "ID", "Titlu", "Pret balcon", "Pret loja", "Pret parter", "Data", "Ora", "Durata"
                 })
@@ -51,6 +53,35 @@ public class UI extends javax.swing.JFrame {
         }
     }
     
+     public void ActualizeazaActorii()
+    {
+        //Citeste rutele din baza de date
+        try
+        {
+            ArrayList<String[]> data = Database.TotiActorii();
+            actoriData = new String[data.size()][5];
+            
+            for(int row = 0; row < data.size(); row++)
+                for(int colum=0;colum<5; colum++)     
+                    {
+                        if (colum==2){
+                            cheltuieliTotaleActori+=Double.parseDouble(data.get(row)[colum]);
+                        }
+                        actoriData[row][colum]=data.get(row)[colum]; 
+                    }
+            
+            actoriTable.setModel(new javax.swing.table.DefaultTableModel(
+                actoriData, new String []
+                {
+                    "ID", "Nume", "Salar brut", "Salar net", "Impozit"
+                })
+            );
+        }
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null, ex, "Eroare", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
     
     /**
@@ -60,6 +91,10 @@ public class UI extends javax.swing.JFrame {
         initComponents();
         Database.Init();
         actualizeazaSpectacolele();
+        ActualizeazaActorii();
+        totalCheltuieliActoriTextField.setText(String.valueOf(cheltuieliTotaleActori));
+        spectacolePanel.setVisible(false);
+        actoriPanel.setVisible(false);
     }
 
     /**
@@ -71,7 +106,13 @@ public class UI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel12 = new javax.swing.JPanel();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        menuPanel = new javax.swing.JPanel();
+        plati_actoriBtn = new javax.swing.JButton();
+        spectacoleBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        plati_actoriBtn1 = new javax.swing.JButton();
+        spectacolePanel = new javax.swing.JPanel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tableSpectacole = new javax.swing.JTable();
         buttonDetalii = new javax.swing.JButton();
@@ -82,11 +123,91 @@ public class UI extends javax.swing.JFrame {
         cmbLuna = new javax.swing.JComboBox();
         jLabel21 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        actoriPanel = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        actoriTable = new javax.swing.JTable();
+        jPanel14 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        totalCheltuieliActoriTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel12.setBackground(new java.awt.Color(161, 161, 146));
-        jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        menuPanel.setBackground(new java.awt.Color(124, 125, 183));
+        menuPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        plati_actoriBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/clown-costume-icon.png"))); // NOI18N
+        plati_actoriBtn.setText("Plati actori");
+        plati_actoriBtn.setToolTipText("Detalii despre contractele actorilor ");
+        plati_actoriBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        plati_actoriBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                plati_actoriBtnActionPerformed(evt);
+            }
+        });
+
+        spectacoleBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/trailer-icon (1).png"))); // NOI18N
+        spectacoleBtn.setText("Spectacole");
+        spectacoleBtn.setToolTipText("Detalii despre spectacolele ce urmeaza sa se desfasoare");
+        spectacoleBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        spectacoleBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                spectacoleBtnActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 0));
+        jLabel2.setText("Meniu");
+
+        plati_actoriBtn1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        plati_actoriBtn1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pictures/Log-Out-icon.png"))); // NOI18N
+        plati_actoriBtn1.setText("Iesire ");
+        plati_actoriBtn1.setToolTipText("Detalii despre contractele actorilor ");
+        plati_actoriBtn1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        plati_actoriBtn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                plati_actoriBtn1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout menuPanelLayout = new javax.swing.GroupLayout(menuPanel);
+        menuPanel.setLayout(menuPanelLayout);
+        menuPanelLayout.setHorizontalGroup(
+            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(menuPanelLayout.createSequentialGroup()
+                .addGap(52, 52, 52)
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(menuPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(menuPanelLayout.createSequentialGroup()
+                        .addComponent(spectacoleBtn)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(plati_actoriBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(plati_actoriBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        menuPanelLayout.setVerticalGroup(
+            menuPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(menuPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addGap(35, 35, 35)
+                .addComponent(spectacoleBtn)
+                .addGap(30, 30, 30)
+                .addComponent(plati_actoriBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
+                .addComponent(plati_actoriBtn1)
+                .addGap(36, 36, 36))
+        );
+
+        menuPanel.setBounds(0, 10, 161, 450);
+        jLayeredPane1.add(menuPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        spectacolePanel.setBackground(new java.awt.Color(161, 161, 146));
+        spectacolePanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         tableSpectacole.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -161,59 +282,140 @@ public class UI extends javax.swing.JFrame {
         );
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 255));
         jLabel1.setText("Spectacole:");
 
-        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
-        jPanel12.setLayout(jPanel12Layout);
-        jPanel12Layout.setHorizontalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE)
-                    .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonDetalii, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        javax.swing.GroupLayout spectacolePanelLayout = new javax.swing.GroupLayout(spectacolePanel);
+        spectacolePanel.setLayout(spectacolePanelLayout);
+        spectacolePanelLayout.setHorizontalGroup(
+            spectacolePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(spectacolePanelLayout.createSequentialGroup()
+                .addGroup(spectacolePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(spectacolePanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(spectacolePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                            .addGroup(spectacolePanelLayout.createSequentialGroup()
+                                .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buttonDetalii, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(spectacolePanelLayout.createSequentialGroup()
+                        .addGap(282, 282, 282)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGap(282, 282, 282)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel12Layout.setVerticalGroup(
-            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel12Layout.createSequentialGroup()
+        spectacolePanelLayout.setVerticalGroup(
+            spectacolePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, spectacolePanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonDetalii, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37))
+                .addGap(46, 46, 46)
+                .addGroup(spectacolePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonDetalii, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30))
         );
+
+        spectacolePanel.setBounds(170, 10, 700, 450);
+        jLayeredPane1.add(spectacolePanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        actoriPanel.setBackground(new java.awt.Color(161, 161, 146));
+        actoriPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 255));
+        jLabel3.setText("Plati actori:");
+
+        actoriTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(actoriTable);
+
+        jPanel14.setBackground(new java.awt.Color(215, 228, 242));
+
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        jLabel4.setText("Total cheltuieli actori:");
+
+        totalCheltuieliActoriTextField.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(totalCheltuieliActoriTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(totalCheltuieliActoriTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(30, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout actoriPanelLayout = new javax.swing.GroupLayout(actoriPanel);
+        actoriPanel.setLayout(actoriPanelLayout);
+        actoriPanelLayout.setHorizontalGroup(
+            actoriPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actoriPanelLayout.createSequentialGroup()
+                .addGroup(actoriPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(actoriPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(actoriPanelLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(actoriPanelLayout.createSequentialGroup()
+                        .addGap(291, 291, 291)
+                        .addComponent(jLabel3)))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+        actoriPanelLayout.setVerticalGroup(
+            actoriPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(actoriPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addGap(53, 53, 53)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(91, Short.MAX_VALUE))
+        );
+
+        actoriPanel.setBounds(170, 10, 700, 450);
+        jLayeredPane1.add(actoriPanel, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 765, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 873, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
@@ -225,12 +427,12 @@ public class UI extends javax.swing.JFrame {
         int row=tableSpectacole.getSelectedRow(); //returneaza randul selectat (spectacolul selectat)
         double pret_balcon=0,pret_loja=0,pret_parter=0;
         
-        String id = tableData[row][0]; // extragem date despre spectacol 
-        String titlu=tableData[row][1];     
+        String id = spectacoleData[row][0]; // extragem date despre spectacol 
+        String titlu=spectacoleData[row][1];     
         try{
-        pret_balcon=Double.parseDouble(tableData[row][2]);
-        pret_loja=Double.parseDouble(tableData[row][3]);
-        pret_parter=Double.parseDouble(tableData[row][4]);
+        pret_balcon=Double.parseDouble(spectacoleData[row][2]);
+        pret_loja=Double.parseDouble(spectacoleData[row][3]);
+        pret_parter=Double.parseDouble(spectacoleData[row][4]);
         }
         catch(NumberFormatException e){
              JOptionPane.showMessageDialog(null, e,"Eroare",JOptionPane.ERROR_MESSAGE);
@@ -244,6 +446,21 @@ public class UI extends javax.swing.JFrame {
         dd.setTxtFields(detBilet.titlu_spectacol,detBilet.incasari_spectacol, detBilet.balcon_total, detBilet.loja_total, detBilet.parter_total, detBilet.balcon_vandut, detBilet.loja_vandut, detBilet.parter_vandut);
         dd.setVisible(true);
     }//GEN-LAST:event_buttonDetaliiActionPerformed
+
+    private void spectacoleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_spectacoleBtnActionPerformed
+        spectacolePanel.setVisible(true);
+        actoriPanel.setVisible(false);
+    }//GEN-LAST:event_spectacoleBtnActionPerformed
+
+    private void plati_actoriBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plati_actoriBtnActionPerformed
+        spectacolePanel.setVisible(false);
+         actoriPanel.setVisible(true);
+    }//GEN-LAST:event_plati_actoriBtnActionPerformed
+
+    private void plati_actoriBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plati_actoriBtn1ActionPerformed
+         this.dispose();
+         System.exit(0); //calling the method is a must
+    }//GEN-LAST:event_plati_actoriBtn1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -280,16 +497,29 @@ public class UI extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel actoriPanel;
+    private javax.swing.JTable actoriTable;
     private javax.swing.JButton buttonDetalii;
     private javax.swing.JComboBox cmbAnul;
     private javax.swing.JComboBox cmbLuna;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
-    private javax.swing.JPanel jPanel12;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JPanel menuPanel;
+    private javax.swing.JButton plati_actoriBtn;
+    private javax.swing.JButton plati_actoriBtn1;
+    private javax.swing.JButton spectacoleBtn;
+    private javax.swing.JPanel spectacolePanel;
     private javax.swing.JTable tableSpectacole;
+    private javax.swing.JTextField totalCheltuieliActoriTextField;
     // End of variables declaration//GEN-END:variables
 }
